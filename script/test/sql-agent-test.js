@@ -9,12 +9,12 @@ describe('sql-agent', function() {
 			name : 'simpleblog-test'
 		});
 		
-		beforeEach(function(done){
+		beforeEach(function(done){ //TODO: reset database
 		    db.clear(function(err){
 		      if (err) return done(err);
 		      db.save([tobi, loki, jane], done);
 		    });
-		  })
+		  });
 
 		it('should save a user if the username does not exist', function(done){
 			
