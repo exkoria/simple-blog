@@ -9,10 +9,14 @@ describe('sql-agent', function() {
 			name : 'simpleblog-test'
 		});
 		
+		
+		
 		beforeEach(function(done){ //TODO: reset database
-		    db.clear(function(err){
-		      if (err) return done(err);
-		      db.save([tobi, loki, jane], done);
+		    db.resetDatabase(function(err){
+		      if (err) 
+		    	  return done(err);
+		      
+		      done();
 		    });
 		  });
 

@@ -20,7 +20,7 @@ exports.SqlAgent = function(databaseSettings){
 	this.storeAccount = storeAccount;
 	this.authenticate = authenticate;
 	this.postMessage = postMessage;
-	this.resetDatabase = resetDatabase;
+	this.resetDatabase = resetDatabase; //Another comment
 };
 
 var storeAccount = function(accSettings, callback) {
