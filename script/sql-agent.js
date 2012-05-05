@@ -71,7 +71,7 @@ var authenticate = function(username, password, callback) {
 var getMessage = function(messageId, callback){
 	sqlClient.query('SELECT message FROM ' + TABLE_BLOG_MESSAGE + ' WHERE id = ?', [messageId], function(err, results, fields) {
 		if(err) {
-			callback(err, '')
+			callback(err, '');
 		} else if(results.length == 1) {
 			callback(null, results[0].message);
 		} else {

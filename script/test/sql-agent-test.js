@@ -6,31 +6,31 @@ var vows = require('vows');
 describe('sql-agent', function() {
 	describe('storeAccount', function() {
 		var sqlAgent = new SqlAgent({
-			name : 'simpleblog-test'
+			name : 'simpleblog_test'
 		});
 		
-		
-		
-		beforeEach(function(done){ //TODO: reset database
-		    db.resetDatabase(function(err){
-		      if (err) 
-		    	  return done(err);
-		      
-		      done();
-		    });
+		beforeEach(function(done){ 
+			sqlAgent.resetDatabase(function(err){
+				if (err){
+					err.toString();
+				}
+				console.log('befeach');
+				done();
+			});
 		  });
 
 		it('should save a user if the username does not exist', function(done){
 			
-			sqlAgent.resetDatabase(function(err){
-				
-			});
+			sqlAgent.toString();
+			console.log('it');
+			done();
 			
-		      var user = new User('Luna');
-		      user.save(function(err){
-		        if (err) throw err;
-		        done();
-		      });
+			
+//		      var user = new User('Luna');
+//		      user.save(function(err){
+//		        if (err) throw err;
+//		        done();
+//		      });
 		    });
 	});
 });
