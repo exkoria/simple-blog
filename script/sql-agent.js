@@ -21,6 +21,7 @@ exports.SqlAgent = function(databaseSettings){
 	this.authenticate = authenticate;
 	this.postMessage = postMessage;
 	this.resetDatabase = resetDatabase; //Another comment
+	this.saveNewUser = saveNewUser;
 };
 
 var storeAccount = function(accSettings, callback) {
@@ -52,6 +53,12 @@ var storeAccount = function(accSettings, callback) {
 				sqlClient.end();
 			});
 		}
+	});
+};
+
+var saveNewUser = function(username, password, callback){
+	sqlClient.query("CALL sp_create_user(?,?)", [username, password], function(err, results, fields) {
+		callback(err, results, fields);
 	});
 };
 
