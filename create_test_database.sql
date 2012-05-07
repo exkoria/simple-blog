@@ -102,5 +102,17 @@ IF rowCount = 0 THEN
 SELECT id FROM simpleblog_test.user WHERE username = myUserName;
 END IF;
  
+END$$
+
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_store_blogmessage`(textMessage VARCHAR(160), userId INT)
+BEGIN
+
+START TRANSACTION;
+INSERT INTO simpleblog_test.blogmessage (message) VALUES (textMessage);
+INSERT INTO simpleblog_test.userblogmessage (user_id) VALUES (userId);
+SELECT max(id) from simpleblog_test.blogmessage;
+COMMIT;
 END
 
