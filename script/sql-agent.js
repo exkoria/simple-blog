@@ -58,7 +58,13 @@ var storeAccount = function(accSettings, callback) {
 
 var saveNewUser = function(username, password, callback){
 	sqlClient.query("CALL sp_create_user(?,?)", [username, password], function(err, results, fields) {
-		callback(err, results, fields);
+		if (err){
+			var error = 'An sql error occurred';
+			callback(error);
+			return;
+		}
+		
+		callback(null, results[0]);
 	});
 };
 

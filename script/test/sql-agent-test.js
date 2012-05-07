@@ -12,49 +12,21 @@ describe('sql-agent', function() {
 		beforeEach(function(done){ 
 			sqlAgent.resetDatabase(function(err){
 				if (err){
-					err.toString();
+					console.log(err);
+					return;
 				}
-				console.log('befeach');
 				done();
 			});
 		  });
 
 		it('should save a user if the username does not exist', function(done){
-			
-			sqlAgent.toString();
-			console.log('it');
-			done();
-			
-			
-//		      var user = new User('Luna');
-//		      user.save(function(err){
-//		        if (err) throw err;
-//		        done();
-//		      });
-		    });
-	});
-	
-	describe('authenticate', function() {
-		var sqlAgent = new SqlAgent({
-			name : 'simpleblog_test'
-		});
-		
-		beforeEach(function(done){ 
-			sqlAgent.resetDatabase(function(err){
+			sqlAgent.saveNewUser('myUser', 'myPass', function(err, userId){
 				if (err){
-					err.toString();
+					throw err;
 				}
-				console.log('befeach');
+				assert.equal(true, userId > 0);
 				done();
 			});
-		  });
-
-		it('should save a user if the username does not exist', function(done){
-			
-			sqlAgent.toString();
-			console.log('it');
-			done();
-			
 			
 //		      var user = new User('Luna');
 //		      user.save(function(err){
