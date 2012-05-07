@@ -8,8 +8,9 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(45) NOT NULL,
   `password` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username_UNIQUE` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `blogmessage` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -42,8 +43,9 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(45) NOT NULL,
   `password` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username_UNIQUE` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `blogmessage` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -81,22 +83,24 @@ CALL sp_clean_all();
 CALL sp_store_users();
 END$$
 
-delimiter $$
+DELIMITER $$
 
-CREATE PROCEDURE `sp_create_user`(myUserName VARCHAR(45), myPassword VARCHAR(45))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_create_user`(myUserName VARCHAR(45), myPassword VARCHAR(45))
 BEGIN
 
 DECLARE rowCount INT; 
+DECLARE result INT;
 SET rowCount = (SELECT COUNT(*) FROM simpleblog_test.user WHERE username = myUserName);
 
 IF rowCount = 1 THEN  
-        SELECT -1;  
+       SET result = -1; 
+        SELECT result;
 END IF; 
 
 IF rowCount = 0 THEN  
         INSERT INTO simpleblog_test.user (username, password) VALUES (myUserName, myPassword);
-SELECT LAST_INSERT_ID();
+SELECT id FROM simpleblog_test.user WHERE username = myUserName;
 END IF;
  
-END$$
+END
 

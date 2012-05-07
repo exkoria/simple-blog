@@ -64,19 +64,19 @@ var saveNewUser = function(username, password, callback){
 			return;
 		}
 		
-		callback(null, results[0]);
+		callback(null, results[0].id); //The id will be undefined if user exists since id will not be returned in select statement.
 	});
 };
 
 var authenticate = function(username, password, callback) {
 
-	sqlClient.query('SELECT id FROM ' + TABLE_CLIENT + ' WHERE username = ? AND password = ?', [username, password], function(err, results, fields) {
+	sqlClient.query('SELECT id FROM ' + TABLE_USER + ' WHERE username = ? AND password = ?', [username, password], function(err, results, fields) {
 		if(err) {
 			throw err;
 		} else if(results.length == 1) {
-			callback(results[0].id);
+			callback(null, results[0].id);
 		} else {
-			callback(0);
+			callback(null, -1);
 		}
 	});
 };
