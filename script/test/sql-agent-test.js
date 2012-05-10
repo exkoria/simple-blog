@@ -77,4 +77,34 @@ describe('sql-agent', function() {
 			});
 		});
 	});
+	
+	describe('postMessage', function() {
+		var sqlAgent = new SqlAgent({
+			name : 'simpleblog_test'
+		});
+
+		beforeEach(function(done) {
+			sqlAgent.resetDatabase(function(err) {
+				if (err) {
+					console.log(err);
+					return;
+				}
+				done();
+			});
+		});
+
+		it('should store a message and return the id if successful', function(done) {
+			
+			sqlAgent.postMessage({
+				textMessage : 'this is the message',
+				userId : 7
+			}, function(err, blogMessageId) {
+				if (err) {
+					throw err;
+				}
+				assert.equal(true, blogMessageId > 0);
+				done();
+			});
+		});
+	});
 });

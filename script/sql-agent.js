@@ -17,43 +17,11 @@ var sqlClient = sql.createClient({
 exports.SqlAgent = function(databaseSettings){
 	DATABASE = databaseSettings.name;
 	sqlClient.query('USE ' + DATABASE);
-	this.storeAccount = storeAccount;
 	this.authenticate = authenticate;
 	this.postMessage = postMessage;
 	this.resetDatabase = resetDatabase; //Another comment
 	this.saveNewUser = saveNewUser;
-};
-
-var storeAccount = function(accSettings, callback) {
-
-	//First, check if the username exists, two usernames cannot be identical
-	sqlClient.query('SELECT * FROM ' + TABLE_USER + ' ' + 'WHERE username = ?', [accSettings.userName], function selectCb(err, results, fields) {
-		if(results.length == 1 && results[0].password == accSettings.password) {
-			//The user is unique, check if the user want's to update new data
-			accSettings.id = results[0].id;
-			if(accSettings.newPassword && (accSettings.password !== accSettings.newPassword) && accSettings.newPassword) {
-				sqlClient.query('UPDATE ' + TABLE_USER + ' ' + 'SET password = ? WHERE id = ?', [accSettings.newPassword, accSettings.id], function(err, results, fields) {
-					if(err) {
-						console.log(err);
-					} else {
-						callback(accSettings.id);
-					}
-
-				});
-			} else { //do nothing
-				callback(accSettings.id);
-			}
-		} else if(results.length == 1) {
-			callback(0, 'Username already exists');
-		} else { //new user, store account
-			sqlClient.query('INSERT INTO ' + TABLE_USER + ' ' + 'SET username = ?, password = ?', [accSettings.userName, accSettings.password], function selectCb(err, results, fields) {
-				if(err) {
-					console.log(err);
-				}
-				sqlClient.end();
-			});
-		}
-	});
+	this.getMessagesForUser = getMessagesForUser;
 };
 
 var saveNewUser = function(username, password, callback){
@@ -93,15 +61,32 @@ var getMessage = function(messageId, callback){
 	});
 };
 
-var postMessage = function(message, callback){
-	sqlClient.query('SELECT id FROM ' + TABLE_CLIENT + ' WHERE username = ? AND password = ?', [username, password], function(err, results, fields) {
+var getMessagesForUser = function(userId, callback){
+	sqlClient.query('SELECT blogmessage.message FROM blogmessage, userblogmessage ' +
+						'WHERE blogmessage.id = userblogmessage.blogmessage_id AND userblogmessage.user_id = ?', [userId], function(err, results, fields) {
+		var result = [];
 		if(err) {
-			throw err;
-		} else if(results.length == 1) {
-			callback(results[0].id);
+			callback(err, '');
 		} else {
-			callback(0);
+			
+			for ( var i = 0; i < results.length; i++) {
+				result[i] = results[i].message;
+			}
+			
+			callback(null, result);
 		}
+	});
+};
+
+var postMessage = function(message, callback){
+	sqlClient.query("CALL sp_store_blogmessage(?,?)", [message.textMessage, message.userId], function(err, results, fields) {
+		if (err){
+			var error = 'An sql error occurred';
+			callback(error);
+			return;
+		}
+		
+		callback(null, results[0].blogMessageId); 
 	});
 };
 

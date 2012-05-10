@@ -72,7 +72,8 @@ CREATE PROCEDURE `sp_store_users`()
 BEGIN
 INSERT INTO user (username, password)
 VALUES ('user1', 'pass1');
-
+INSERT INTO user (username, password)
+VALUES ('user2', 'pass1');
 END$$
 
 delimiter $$
@@ -81,6 +82,9 @@ CREATE PROCEDURE `sp_setup_new`()
 BEGIN
 CALL sp_clean_all();
 CALL sp_store_users();
+Call sp_store_blogmessage('message1', 7);
+Call sp_store_blogmessage('message2', 7);
+Call sp_store_blogmessage('message3', 8);
 END$$
 
 DELIMITER $$
@@ -109,10 +113,15 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_store_blogmessage`(textMessage VARCHAR(160), userId INT)
 BEGIN
 
+DECLARE textMessageId INT;
 START TRANSACTION;
 INSERT INTO simpleblog_test.blogmessage (message) VALUES (textMessage);
-INSERT INTO simpleblog_test.userblogmessage (user_id) VALUES (userId);
-SELECT max(id) from simpleblog_test.blogmessage;
-COMMIT;
-END
 
+SET textMessageId = (SELECT max(id) from simpleblog_test.blogmessage);
+INSERT INTO simpleblog_test.userblogmessage (user_id, blogmessage_id) VALUES (userId, textMessageId);
+COMMIT;
+END$$
+
+DELIMITER $$
+
+CALL `sp_setup_new`();
